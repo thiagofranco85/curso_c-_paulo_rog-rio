@@ -24,15 +24,20 @@ namespace XGameDomain.Services
         }
 
         public AdicionarJogadorResponse AdicionarJogador(AdicionarJogadorRequest request)
-        { 
-            var jogador = new Jogador(request.Email, "222");
-             
-            jogador.Email = request.Email;
-            jogador.Nome = request.Nome;
-            jogador.Status = Enum.EnumSituacaoJogador.EmAndamento;
+        {
+            var nome = new Nome(request.PrimeiroNome, request.UltimoNome);
+            var email = new Email(request.Email);
 
-            Guid id = _repositoryJogador.AdicionarJogador(jogador);
-            return new AdicionarJogadorResponse() { Id = id, Message = "Operação Realizada com sucesso!" };
+            var jogador = new Jogador(nome, email, request.Senha);
+            
+            if( this.IsInvalid())
+            {
+                return null;
+            }
+
+            //jogador = _repositoryJogador.AdicionarJogador(jogador);
+
+            return new AdicionarJogadorResponse() { Id = Guid.NewGuid(), Message = "Operação Realizada com sucesso!" };
         }
 
         public AutenticarJogadorResponse AutenticarJogador(AutenticarJogadorRequest request)
@@ -41,8 +46,10 @@ namespace XGameDomain.Services
             {
                 AddNotification("AutenticarJogadorRequest", Message.X0_E_OBRIGATORIO.ToFormat("AutenticarJogadorRequest") );
             }
-             
-            var jogador = new Jogador(request.Email, request.Senha);
+
+            var email = new Email(request.Email); 
+
+            var jogador = new Jogador( email, request.Senha);
 
             AddNotifications( jogador );
 
@@ -50,7 +57,14 @@ namespace XGameDomain.Services
             {
                 return null;
             }
-            return _repositoryJogador.AutenticarJogador(request);
+            jogador =  _repositoryJogador.AutenticarJogador(request);
+            /*
+            AutenticarJogadorResponse response = new AutenticarJogadorResponse();
+            response.Email = jogador.Email.Endereco;
+            response.PrimeiroNome = jogador.Nome.PrimeiroNome;
+            response.Status = (int) jogador.Status;
+            */
+            return (AutenticarJogadorResponse) jogador;
         }
 
         private bool IsEmail(string email)

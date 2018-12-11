@@ -126,4 +126,7 @@
   <data name="X0_INVALIDO" xml:space="preserve">
     <value>{0} é inválido.</value>
   </data>
+  <data name="X0_OBRIGATORIO_DEVE_CONTER_ENTRE_X1_E_X2_CARACTERES" xml:space="preserve">
+    <value>{0} é obrigatório e deve conter entre {1} e {2} caracteres.</value>
+  </data>
 </root>
